@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Speech Emotion Recognition</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,203 +14,253 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: radial-gradient(circle at 20% 20%, #67e203 0%, #d50682 60%, #f5f507 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Soft floating orbs in the background for visual depth */
+        body::before, body::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.35;
+            z-index: 0;
+        }
+        body::before {
+            width: 300px; height: 300px;
+            background: #ff8fb1;
+            top: -60px; left: -60px;
+        }
+        body::after {
+            width: 350px; height: 350px;
+            background: #4fd1ff;
+            bottom: -80px; right: -80px;
         }
 
         .container {
             width: 100%;
-            max-width: 640px;
+            max-width: 620px;
+            position: relative;
+            z-index: 1;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
             color: white;
         }
 
-        .header .icon {
-            font-size: 56px;
-            margin-bottom: 8px;
+        .header .badge {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            background: rgba(121, 11, 11, 0.12);
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 14px;
         }
 
         .header h1 {
-            font-size: 30px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .header p {
             font-size: 15px;
-            opacity: 0.85;
+            opacity: 0.75;
         }
 
         .card {
-            background: white;
-            border-radius: 16px;
-            padding: 36px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            padding: 38px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
         }
 
         .upload-zone {
-            border: 2px dashed #c3c9f5;
-            border-radius: 12px;
-            padding: 32px 20px;
+            border: 2px dashed #ccc;
+            border-radius: 14px;
+            padding: 34px 20px;
             text-align: center;
-            background: #f8f9ff;
-            transition: border-color 0.2s ease, background 0.2s ease;
+            background: #fafafd;
+            transition: all 0.25s ease;
         }
 
         .upload-zone:hover {
-            border-color: #764ba2;
-            background: #f2f0fb;
+            border-color: #0dc4ca;
+            background: #f4f2fc;
+            transform: scale(1.005);
         }
 
         .upload-zone p {
             color: #555;
             margin-bottom: 16px;
-            font-size: 15px;
+            font-size: 14.5px;
         }
 
         input[type="file"] {
-            font-size: 14px;
-            margin-bottom: 18px;
+            font-size: 13.5px;
+            margin-bottom: 20px;
+            color: #444;
         }
 
         button {
             display: block;
             width: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #9b11b7 0%, #ae058f 100%);
             color: white;
-            padding: 14px;
+            padding: 15px;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15.5px;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
+            letter-spacing: 0.3px;
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(118, 75, 162, 0.35);
+            box-shadow: 0 10px 24px rgba(6, 109, 220, 0.4);
         }
 
         .result {
-            margin-top: 28px;
-            padding-top: 28px;
+            margin-top: 30px;
+            padding-top: 30px;
             border-top: 1px solid #eee;
             text-align: center;
-            animation: fadeIn 0.4s ease;
+            animation: fadeIn 0.5s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .result .emoji {
-            font-size: 52px;
-            margin-bottom: 6px;
+        .result .emoji-ring {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 46px;
+            margin: 0 auto 14px;
+            background: var(--emotion-bg, #f0f0f0);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
 
         .result h2 {
-            font-size: 14px;
+            font-size: 12.5px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #999;
+            letter-spacing: 1.5px;
+            color: #aaa;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .result .emotion-name {
-            font-size: 28px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 30px;
             font-weight: 700;
-            color: #4a2f7a;
+            color: var(--emotion-color, #e1ba0a);
             text-transform: capitalize;
-            margin-bottom: 24px;
+            margin-bottom: 26px;
         }
 
         .prob-row {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 11px;
             text-align: left;
         }
 
         .prob-label {
-            width: 90px;
-            font-size: 13px;
+            width: 88px;
+            font-size: 12.5px;
             color: #555;
             text-transform: capitalize;
             flex-shrink: 0;
+            font-weight: 500;
         }
 
         .prob-bar-bg {
             flex: 1;
             background: #eee;
-            border-radius: 6px;
-            height: 10px;
+            border-radius: 8px;
+            height: 11px;
             overflow: hidden;
         }
 
         .prob-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 6px;
+            background: linear-gradient(90deg, #9c2fb8, #e23d74);
+            border-radius: 8px;
+            transition: width 0.6s ease;
         }
 
         .prob-value {
-            width: 44px;
-            font-size: 13px;
-            color: #777;
+            width: 42px;
+            font-size: 12.5px;
+            color: #888;
             text-align: right;
             flex-shrink: 0;
+            font-weight: 500;
         }
 
         .suggestion-box {
-            margin-top: 24px;
-            padding: 18px;
-            background: #f3f0fb;
-            border-radius: 10px;
+            margin-top: 26px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f4f2fc, #fdf1f5);
+            border-radius: 14px;
             text-align: left;
+            border: 1px solid #eee0f0;
         }
 
         .suggestion-box .label {
-            font-size: 12px;
+            font-size: 11.5px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #764ba2;
-            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: #ca46b6;
+            font-weight: 700;
             margin-bottom: 8px;
         }
 
         .suggestion-box .text {
-            font-size: 14px;
+            font-size: 14.5px;
             color: #333;
-            line-height: 1.5;
+            line-height: 1.6;
+            font-style: italic;
         }
 
         footer {
             text-align: center;
-            margin-top: 24px;
-            color: rgba(255,255,255,0.7);
-            font-size: 13px;
+            margin-top: 26px;
+            color: rgba(255,255,255,0.55);
+            font-size: 12.5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="icon">🎙️</div>
-            <h1>Speech Emotion Recognition</h1>
-            <p>Upload a short voice clip and let the model detect the emotion behind it</p>
+            <div class="badge">AI Voice Analysis</div>
+            <h1>🎙️ Speech Emotion Recognition</h1>
+            <p>Upload a short voice clip and discover the emotion behind it</p>
         </div>
 
         <div class="card">
@@ -221,12 +273,20 @@
             </form>
 
             {% if prediction %}
-            <div class="result">
-                {% set emoji_map = {
-                    'angry': '😠', 'calm': '😌', 'disgust': '🤢', 'fearful': '😨',
-                    'happy': '😄', 'neutral': '😐', 'sad': '😢', 'surprised': '😲'
-                } %}
-                <div class="emoji">{{ emoji_map.get(prediction, '🎧') }}</div>
+            {% set emotion_style = {
+                'angry':     {'emoji': '😠', 'color': '#d9376e', 'bg': '#fde3ec'},
+                'calm':      {'emoji': '😌', 'color': '#2a9d8f', 'bg': '#e1f5f2'},
+                'disgust':   {'emoji': '🤢', 'color': '#6a8f3d', 'bg': '#eaf3dc'},
+                'fearful':   {'emoji': '😨', 'color': '#6d5bd0', 'bg': '#ece8fb'},
+                'happy':     {'emoji': '😄', 'color': '#e8a33d', 'bg': '#fdf1dc'},
+                'neutral':   {'emoji': '😐', 'color': '#777777', 'bg': '#eeeeee'},
+                'sad':       {'emoji': '😢', 'color': '#3a72c4', 'bg': '#e2edfb'},
+                'surprised': {'emoji': '😲', 'color': '#c4573a', 'bg': '#fbe8e1'}
+            } %}
+            {% set style = emotion_style.get(prediction, {'emoji': '🎧', 'color': '#4a2f7a', 'bg': '#f0f0f0'}) %}
+
+            <div class="result" style="--emotion-color: {{ style.color }}; --emotion-bg: {{ style.bg }};">
+                <div class="emoji-ring">{{ style.emoji }}</div>
                 <h2>Predicted Emotion</h2>
                 <div class="emotion-name">{{ prediction }}</div>
 
@@ -252,7 +312,7 @@
             {% endif %}
         </div>
 
-        <footer>Built with Flask + scikit-learn + Gemini · trained on RAVDESS</footer>
+        <footer>Built with Flask · scikit-learn · Gemini API — trained on RAVDESS</footer>
     </div>
 </body>
 </html>
