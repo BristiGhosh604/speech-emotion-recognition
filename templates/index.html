@@ -172,6 +172,29 @@
             flex-shrink: 0;
         }
 
+        .suggestion-box {
+            margin-top: 24px;
+            padding: 18px;
+            background: #f3f0fb;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .suggestion-box .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #764ba2;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .suggestion-box .text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+        }
+
         footer {
             text-align: center;
             margin-top: 24px;
@@ -218,11 +241,18 @@
                 </div>
                 {% endfor %}
                 {% endif %}
+
+                {% if suggestion %}
+                <div class="suggestion-box">
+                    <p class="label">💬 Suggested Response</p>
+                    <p class="text">{{ suggestion }}</p>
+                </div>
+                {% endif %}
             </div>
             {% endif %}
         </div>
 
-        <footer>Built with Flask + scikit-learn · trained on RAVDESS</footer>
+        <footer>Built with Flask + scikit-learn + Gemini · trained on RAVDESS</footer>
     </div>
 </body>
 </html>
