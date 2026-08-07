@@ -1,0 +1,14 @@
+# Central settings for the whole project.
+# Any script that needs a path or parameter reads it from here.
+
+data:
+  raw_dir: "data/raw"
+  sample_rate: 22050
+  duration_seconds: 3
+
+model:
+  n_estimators: 200
+  max_depth: 15
+
+output:
+  model_path: "outputs/emotion_model.pkl"
