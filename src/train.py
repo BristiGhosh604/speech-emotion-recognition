@@ -6,13 +6,32 @@ from sklearn.metrics import accuracy_score, classification_report
 import pickle
 import os
 
+from sklearn.model_selection import StratifiedKFold, cross_val_score
+
+def run_cross_validation(X, y):
+    """
+    5-fold cross-validation: trains 5 separate models on different data splits,
+    and reports mean +/- standard deviation accuracy -- a more honest estimate
+    than a single train/test split.
+    """
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42, n_jobs=-1)
+
+    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    scores = cross_val_score(model, X_scaled, y, cv=skf, scoring="accuracy", n_jobs=-1)
+
+    print(f"\nCross-validation scores (5 folds): {scores}")
+    print(f"Mean accuracy: {scores.mean():.4f} (+/- {scores.std():.4f})")
 
 def main():
     # Load the features and labels we saved earlier
     X = np.load("data/processed/X.npy")
     y = np.load("data/processed/y.npy")
     print(f"Loaded X={X.shape}, y={y.shape}")
-
+    run_cross_validation(X, y)
+    
     # Split: 80% train, 20% test. stratify=y ensures each emotion is
     # proportionally represented in both sets (not all "happy" ending up in test, etc.)
     X_train, X_test, y_train, y_test = train_test_split(
