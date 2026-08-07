@@ -28,33 +28,26 @@ def load_audio(file_path, sample_rate=22050, duration=3):
 def extract_features(file_path, sample_rate=22050, duration=3):
     """
     Converts an audio file into a fixed-size numeric feature vector.
-    MFCCs via python_speech_features (pure numpy, no numba).
-    Spectral centroid + zero-crossing rate computed manually with numpy/scipy.
     """
     y, sr = load_audio(file_path, sample_rate, duration)
 
-    # --- MFCCs: 13 coefficients per audio frame, then averaged over time ---
     mfcc_features = mfcc(y, samplerate=sr, numcep=13, nfft=1024)
-    mfccs_mean = mfcc_features.mean(axis=0)  # shape: (13,)
+    mfccs_mean = mfcc_features.mean(axis=0)
 
-    # --- Spectral centroid: "center of mass" of the frequency spectrum ---
-    # Higher = brighter/sharper sound. Computed via FFT manually.
     freqs, times, spectrogram = signal.spectrogram(y, fs=sr)
     centroid_per_frame = np.sum(freqs[:, None] * spectrogram, axis=0) / (np.sum(spectrogram, axis=0) + 1e-10)
     centroid_mean = centroid_per_frame.mean()
 
-    # --- Zero-crossing rate: how often the signal flips sign (noisiness measure) ---
     zero_crossings = np.where(np.diff(np.sign(y)))[0]
     zcr_mean = len(zero_crossings) / len(y)
 
     feature_vector = np.concatenate([
-        mfccs_mean,           # 13 numbers
-        [centroid_mean],      # 1 number
-        [zcr_mean],            # 1 number
+        mfccs_mean,
+        [centroid_mean],
+        [zcr_mean],
     ])
 
     return feature_vector
-
 
 if __name__ == "__main__":
     test_file = "data/raw/Actor_01/03-01-01-01-01-01-01.wav"
