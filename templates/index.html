@@ -253,6 +253,30 @@
             color: rgba(255,255,255,0.55);
             font-size: 12.5px;
         }
+
+        .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+          .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #eee;
+    color: #666;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+        .tab-btn.active {
+    background: linear-gradient(135deg, #6d5bd0, #ff6f9c);
+    color: white;
+}
     </style>
 </head>
 <body>
@@ -264,13 +288,25 @@
         </div>
 
         <div class="card">
-            <form action="/predict" method="post" enctype="multipart/form-data">
-                <div class="upload-zone">
-                    <p>Choose a .wav audio file to analyze</p>
-                    <input type="file" name="audio_file" accept=".wav" required>
-                    <button type="submit">✨ Analyze Emotion</button>
-                </div>
-            </form>
+            <div class="tabs">
+    <button type="button" class="tab-btn active" id="uploadTabBtn" onclick="showTab('upload')">📁 Upload File</button>
+    <button type="button" class="tab-btn" id="recordTabBtn" onclick="showTab('record')">🎤 Record Audio</button>
+</div>
+
+<!-- Upload tab -->
+<form action="/predict" method="post" enctype="multipart/form-data" id="uploadForm">
+    <div class="upload-zone" id="uploadTab">
+        <p>Choose an audio file to analyze (.wav, .m4a, .mp3, etc.)</p>
+        <input type="file" name="audio_file" accept="audio/*" required>
+        <button type="submit">✨ Analyze Emotion</button>
+    </div>
+</form>
+
+<!-- Record tab -->
+<div class="upload-zone" id="recordTab" style="display: none;">
+    <p id="recordStatus">Click below to record from your microphone</p>
+    <button type="button" id="recordBtn" onclick="toggleRecording()">🔴 Start Recording</button>
+</div>
 
             {% if prediction %}
             {% set emotion_style = {
@@ -314,5 +350,68 @@
 
         <footer>Built with Flask · scikit-learn · Gemini API — trained on RAVDESS</footer>
     </div>
+
+    <script>
+    // Switches between the "Upload" and "Record" tabs
+    function showTab(tab) {
+        document.getElementById('uploadTab').style.display = tab === 'upload' ? 'block' : 'none';
+        document.getElementById('recordTab').style.display = tab === 'record' ? 'block' : 'none';
+        document.getElementById('uploadTabBtn').classList.toggle('active', tab === 'upload');
+        document.getElementById('recordTabBtn').classList.toggle('active', tab === 'record');
+    }
+
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
+
+    async function toggleRecording() {
+        const btn = document.getElementById('recordBtn');
+        const status = document.getElementById('recordStatus');
+
+        if (!isRecording) {
+            // Ask the browser for microphone access
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            // Every time a chunk of audio is available, save it
+            mediaRecorder.ondataavailable = (event) => {
+                audioChunks.push(event.data);
+            };
+
+            // When recording stops, package the audio and send it to the server
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                sendRecordedAudio(audioBlob);
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+            btn.textContent = '⏹️ Stop Recording';
+            status.textContent = 'Recording... click to stop';
+        } else {
+            mediaRecorder.stop();
+            isRecording = false;
+            btn.textContent = '🔴 Start Recording';
+            status.textContent = 'Processing your recording...';
+        }
+    }
+
+    function sendRecordedAudio(audioBlob) {
+        const formData = new FormData();
+        formData.append('audio_file', audioBlob, 'recording.webm');
+
+        fetch('/predict', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.text())
+          .then(html => {
+              document.open();
+              document.write(html);
+              document.close();
+          });
+    }
+</script>
+
 </body>
 </html>
