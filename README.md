@@ -123,7 +123,8 @@ python app.py
 
 ![GitHub Streak](https://streak-stats.demolab.com?user=BristiGhosh604&theme=default&hide_border=true)
 
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=BristiGhosh604&layout=compact&theme=default&hide_border=true&cache_seconds=1800)
+![Top Language](https://img.shields.io/github/languages/top/BristiGhosh604/speech-emotion-recognition?style=for-the-badge&color=764ABA)
+![Languages Count](https://img.shields.io/github/languages/count/BristiGhosh604/speech-emotion-recognition?style=for-the-badge&color=764ABA)
 
 </div>
 
