@@ -35,7 +35,7 @@ def get_empathetic_response(emotion):
             f"respond to them. Keep it natural and conversational, not clinical."
         )
         response = gemini_client.models.generate_content(
-            model="gemini-2.5-flash-lite",
+            model="gemini-2.5-flash",
             contents=prompt,
         )
         return response.text
