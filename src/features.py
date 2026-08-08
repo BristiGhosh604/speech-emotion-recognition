@@ -1,12 +1,33 @@
+import os
 import soundfile as sf
 import numpy as np
 from scipy import signal
 from python_speech_features import mfcc
+from pydub import AudioSegment
+import tempfile
+
+
+def convert_to_wav(file_path):
+    """
+    Converts any audio format (m4a, webm, mp3, etc.) into a temporary .wav file
+    using ffmpeg (via pydub). If the file is already a .wav, this still works
+    fine -- just re-encodes it cleanly.
+    Returns the path to the new temporary .wav file.
+    """
+    audio = AudioSegment.from_file(file_path)  # ffmpeg auto-detects the format
+    temp_wav = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+    audio.export(temp_wav.name, format="wav")
+    return temp_wav.name
 
 
 def load_audio(file_path, sample_rate=22050, duration=3):
     """Loads audio using soundfile (no numba dependency) and resamples if needed."""
-    y, sr = sf.read(file_path)
+    # Convert to a standard wav first -- handles m4a, webm, mp3, etc.
+    wav_path = convert_to_wav(file_path)
+
+    y, sr = sf.read(wav_path)
+
+    os.remove(wav_path)  # cleanup the temporary file
 
     if y.ndim > 1:
         y = y.mean(axis=1)  # stereo -> mono
