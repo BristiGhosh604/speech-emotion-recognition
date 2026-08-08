@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- Animated typing header -->
-<img src="https://readme-typing-svg.demolab.com?font=Poppins&size=32&duration=3000&pause=1000&color=764ABA&center=true&vCenter=true&width=600&lines=Speech+Emotion+Recognition;Classical+ML+%2B+LLM+Integration;Rebuilt+From+Scratch+2026" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Poppins&size=32&duration=3000&pause=1000&color=764ABA&center=true&vCenter=true&width=600&lines=Speech+Emotion+Recognition;Classical+ML+%2B+LLM+Integration;Rebuilt+From+Scratch" alt="Typing SVG" />
 
 <br/>
 
@@ -123,7 +123,7 @@ python app.py
 
 ![GitHub Streak](https://streak-stats.demolab.com?user=BristiGhosh604&theme=default&hide_border=true)
 
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=BristiGhosh604&layout=compact&theme=default&hide_border=true)
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=BristiGhosh604&layout=compact&theme=default&hide_border=true&cache_seconds=1800)
 
 </div>
 
