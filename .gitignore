@@ -3,7 +3,8 @@ __pycache__/
 *.pyc
 .env
 data/
-outputs/
+outputs/*
+!outputs/emotion_model.pkl
 .DS_Store
 uploads/
 ffmpeg*/
