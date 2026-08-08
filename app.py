@@ -40,7 +40,7 @@ def get_empathetic_response(emotion):
         )
         return response.text
     except Exception as e:
-        print(f"[Gemini error] {e}")  # visible in terminal for debugging, not shown to users
+        print(f"[Gemini error] {e}", flush=True) # visible in terminal for debugging, not shown to users
         return "Suggestion temporarily unavailable — please try again in a moment."
         
 
